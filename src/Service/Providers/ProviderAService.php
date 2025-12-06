@@ -9,26 +9,24 @@ class ProviderAService implements QuoteProviderInterface
 {
     public function __construct(private HttpClientInterface $client) {}
 
-    public function getQuote(string $origin, string $destination): array
+    public function supports(string $providerName): bool
     {
-        $url = 'https://webhook.site/bfa2fb1e-16db-4bef-a479-4b2ca41c6dd6';
+        return $providerName === 'ProviderA';
+    }
 
-        $response = $this->client->request('POST', $url, [
-            'headers' => [
-                'User-Agent' => 'SymfonyHttpClient',
-                'Content-Type' => 'application/json',
-                'Accept' => 'application/json'
-            ],
-            'body' => json_encode([
+    public function getQuote(string $origin, string $destination, string $endpoint): array
+    {
+        $response = $this->client->request('POST', $endpoint, [
+            'json' => [
                 'originZipcode' => $origin,
                 'destinationZipcode' => $destination
-            ])
+            ]
         ]);
-        
+
         return [
             'provider' => 'ProviderA',
             'success' => true,
-            'data' => $response->toArray()
+            'data' => $response->getContent(false)
         ];
     }
 }

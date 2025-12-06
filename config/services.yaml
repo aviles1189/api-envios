@@ -22,13 +22,12 @@ services:
 
     # 🔹 Etiquetar automáticamente todos los providers
     App\Service\Providers\:
-        resource: '../src/Service/Providers/*'
+        resource: '../src/Service/Providers'
         tags: ['app.quote_provider']
 
-    # 🔹 Injectar providers en QuoteService
     App\Service\QuoteService:
         arguments:
-            $providers: !tagged_iterator 'app.quote_provider'
+            $providers: !tagged_iterator app.quote_provider
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
